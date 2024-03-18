@@ -15,21 +15,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
+        <!-- date title -->
+
         <TextView
             android:id="@+id/calendar_prev_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_marginStart="40dp"
             android:text="Prev"
-            app:layout_constraintEnd_toStartOf="@+id/txt_current_month"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="20dp"
-            tools:layout_editor_absoluteY="8dp" />
+            app:layout_constraintVertical_bias="0.75" />
 
-
-        <!-- date title -->
         <TextView
             android:id="@+id/txt_current_month"
             android:layout_width="wrap_content"
@@ -52,9 +53,9 @@
             android:layout_margin="8dp"
             android:layout_marginEnd="36dp"
             android:text="Next"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/txt_current_month"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.511" />
         </androidx.constraintlayout.widget.ConstraintLayout>
