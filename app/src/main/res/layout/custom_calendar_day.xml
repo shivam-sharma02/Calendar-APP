@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="50dp"
     android:layout_height="50dp"
-    android:id="@+id/calendar_linear_layout"
+    android:id="@+id/calendar_linear_lay"
     android:gravity="center">
 
     <TextView
@@ -12,10 +12,10 @@
         android:layout_height="wrap_content"
         android:text="Day"
         android:layout_gravity="center"
-        android:id="@+id/txt_day"/>
+        android:id="@+id/txts_day"/>
 
     <TextView
-        android:id="@+id/txt_date"
+        android:id="@+id/txts_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

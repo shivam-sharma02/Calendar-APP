@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // third part
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView!!.layoutManager = layoutManager
         val calendarAdapter = CalendarAdapter(this, dates, currentDate, changeMonth)
         recyclerView!!.adapter = calendarAdapter

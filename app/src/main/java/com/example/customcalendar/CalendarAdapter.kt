@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.customcalendar.R
@@ -45,7 +46,7 @@ class CalendarAdapter(private val context: Context,
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
-        return ViewHolder(inflater.inflate(R.layout.custom_calendar_day, parent, false), mListener!!)
+        return ViewHolder(inflater.inflate(R.layout.custom_calendar, parent, false), mListener!!)
     }
 
     override fun getItemCount(): Int = data.size
