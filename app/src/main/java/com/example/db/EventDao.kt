@@ -20,4 +20,7 @@ interface EventDao {
     @Delete
     suspend fun deleteEvent(event: Event)
 
+    @Query("SELECT * FROM Event WHERE eventDate = :date")
+    fun getEventsByDate(date: String?): LiveData<List<Event>>
+
 }

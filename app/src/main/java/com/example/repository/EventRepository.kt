@@ -9,8 +9,8 @@ class EventRepository(
 
     suspend fun upsert (event: Event) = db.getEventsDao().upsert(event)
 
-    fun getSavedNews() = db.getEventsDao().getAllEvents()
+    fun getSavedEvents(date: String?) = db.getEventsDao().getEventsByDate(date)
 
-    suspend fun deleteArticle(event: Event) = db.getEventsDao().deleteEvent(event)
+    suspend fun deleteEvent(event: Event) = db.getEventsDao().deleteEvent(event)
 
 }

@@ -1,4 +1,5 @@
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,10 +12,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.customcalendar.R
+import com.example.customcalendar.WriteEvents
 import java.sql.RowId
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.Month
 import java.util.Calendar
+import java.util.Calendar.MONTH
 import java.util.Date
 import java.util.Locale
 
@@ -79,10 +83,12 @@ class CalendarAdapter(private val context: Context,
                         selectCurrentDate = false
                         holder.listener.onItemClick(position)
                         notifyDataSetChanged()
+                        writeEvent(holder)
                     }
 
                     if (index == position)
                         makeItemSelected(holder)
+
                     else {
                         if (displayDay == selectedDay
                             && displayMonth == selectedMonth
@@ -124,7 +130,6 @@ class CalendarAdapter(private val context: Context,
         holder.txtDayInWeek!!.setTextColor(Color.parseColor("#FFFFFF"))
         holder.linearLayout!!.setBackgroundColor(ContextCompat.getColor(context, R.color.ThemeColor1)) // theme color 1
         holder.linearLayout!!.isEnabled = false
-
     }
 
     private fun makeItemDefault(holder: ViewHolder) {
@@ -132,5 +137,32 @@ class CalendarAdapter(private val context: Context,
         holder.txtDayInWeek!!.setTextColor(Color.BLACK)
         holder.linearLayout!!.setBackgroundColor(Color.WHITE)
         holder.linearLayout!!.isEnabled = true
+    }
+
+    private fun writeEvent(holder: ViewHolder) {
+
+//        if (holder.adapterPosition >= 0 && holder.adapterPosition < data.size){
+
+//            val selectedDate = data[holder.adapterPosition]
+//
+//            // Format the selected date to string
+//            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+//            val formattedDate = sdf.format(selectedDate)
+//
+//            // Open WriteEvent activity with the selected date information
+//            val intent = Intent(context, WriteEvents::class.java)
+//            intent.putExtra("selected_date", formattedDate)
+//            context.startActivity(intent)
+            val date = holder.txtDay.text.toString()
+            val month = selectedMonth.toString()
+
+            val intent = Intent(context, WriteEvents::class.java)
+            intent.putExtra("EXTRA_DATE", date)
+            intent.putExtra("EXTRA_MONTH", month)
+            Log.e("intentExtra", "intent extra date which is $date has been sent and month is $month")
+            context.startActivity(intent)
+
+//        }
+
     }
 }

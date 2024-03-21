@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class Event (
     @PrimaryKey(autoGenerate = true)
     var id :Int? = null,
-    var eventDescription : String? = null
+    var eventDescription : String? = null,
+    var eventDate: String? = null
     )
