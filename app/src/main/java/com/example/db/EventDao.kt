@@ -12,7 +12,7 @@ import com.example.model.Event
 interface EventDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsert(text: String): Long
+    suspend fun upsert(event: Event): Long
 
     @Query("SELECT * FROM Event")
     fun getAllEvents(): LiveData<List<Event>>

@@ -13,7 +13,7 @@ import com.example.model.Event
 )
 abstract class EventDatabase: RoomDatabase() {
 
-    abstract fun getArticleDao(): EventDao
+    abstract fun getEventsDao(): EventDao
 
     companion object {
         private var instance: EventDatabase? = null
