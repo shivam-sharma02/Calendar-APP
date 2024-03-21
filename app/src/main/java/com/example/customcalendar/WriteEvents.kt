@@ -1,34 +1,54 @@
 package com.example.customcalendar
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import com.example.db.EventDatabase
+import com.example.model.Event
+import com.example.repository.EventRepository
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import java.util.Calendar
 
 class WriteEvents : AppCompatActivity() {
 
+    lateinit var viewModel: EventViewModel
+
     private lateinit var timePicker: MaterialTimePicker
     private lateinit var calendar: Calendar
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write_events)
 
+        val newsRepository = EventRepository(EventDatabase(this))
+        val viewModelProviderFactory = EventViewModelProviderFactory(newsRepository)
+        viewModel = ViewModelProvider(this,viewModelProviderFactory).get(EventViewModel::class.java)
 
-
-        val date = intent.getStringExtra("EXTRA_DATE")
-        val month = intent.getStringExtra("EXTRA_MONTH")
+        val date = intent?.getStringExtra("EXTRA_DATE")
+        val month = intent?.getStringExtra("EXTRA_MONTH")
 
         val currentMonth = findViewById<TextView>(R.id.currentMonth)
         val currentDate = findViewById<TextView>(R.id.currentDate)
         val selectTime = findViewById<Button>(R.id.selectTime)
         val alarmSwitch = findViewById<Switch>(R.id.alarmSwitch)
+        val eventDescription = findViewById<TextInputLayout>(R.id.eventDescription)
         val selectedTime = findViewById<TextView>(R.id.timeView)
+        val createEvent = findViewById<Button>(R.id.createEvent)
+
+        selectTime.visibility = View.INVISIBLE
+        selectedTime.visibility = View.INVISIBLE
+
 
 
         val currentDate2 = when(month) {
@@ -62,6 +82,20 @@ class WriteEvents : AppCompatActivity() {
 
         selectTime.setOnClickListener{
             showTimePicker()
+        }
+
+        createEvent.setOnClickListener {
+
+            val eventDescriptionToPass = eventDescription.editText?.text.toString()
+            val eventDateToPass = "$date? ,$currentDate2?"
+
+            if (eventDescriptionToPass.isNotEmpty()) {
+                val event = Event(eventDescription = eventDescriptionToPass, eventDate = eventDateToPass)
+                viewModel.saveEvent(event)
+                Toast.makeText(this@WriteEvents, "Event saved successfully !!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this@WriteEvents, "Please enter event description and date!", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }

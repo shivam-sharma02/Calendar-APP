@@ -4,16 +4,21 @@ import CalendarAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
+import com.example.db.EventDatabase
+import com.example.repository.EventRepository
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var viewModel: EventViewModel
 
     private val lastDayInCalendar = Calendar.getInstance(Locale.ENGLISH)
     private val sdf = SimpleDateFormat("MMMM yyyy", Locale.ENGLISH)
@@ -38,6 +43,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val newsRepository = EventRepository(EventDatabase(this))
+        val viewModelProviderFactory = EventViewModelProviderFactory(newsRepository)
+        viewModel = ViewModelProvider(this,viewModelProviderFactory).get(EventViewModel::class.java)
 
         recyclerView = findViewById(R.id.calendar_recycler_view)
         currMonthTextView = findViewById(R.id.txt_current_month)

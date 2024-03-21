@@ -7,11 +7,10 @@
 
     <LinearLayout
         android:id="@+id/calendar_linear_layout"
-        android:layout_width="80dp"
+        android:layout_width="95dp"
         android:layout_height="50dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintEnd_toStartOf="@+id/eventRecycle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
