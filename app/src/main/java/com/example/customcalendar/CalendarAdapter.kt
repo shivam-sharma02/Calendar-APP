@@ -110,13 +110,9 @@ class CalendarAdapter(private val context: Context,
 
         val eventForDate = events.find { it.eventDate == formattedDateCompare }
 
-        // Update UI based on event
-
         if (eventForDate != null) {
-            // Show event in eventContent TextView
             holder.eventContent.text = eventForDate.eventDescription
         } else {
-            // No event for this date, hide eventContent TextView or show "No event"
             holder.eventContent.text = " "
         }
     }
