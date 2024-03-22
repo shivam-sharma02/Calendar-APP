@@ -2,7 +2,7 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/ThemeColor1</item>
-        <item name="android:colorPrimary">@color/PrimaryTheme</item>
-        <item name="android:colorPrimaryDark">@color/PrimaryTheme</item>
+        <item name="android:colorPrimary">@color/ThemeColor1</item>
+        <item name="android:colorPrimaryDark">@color/ThemeColor1</item>
     </style>
 </resources>
