@@ -1,6 +1,10 @@
 package com.example.customcalendar
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +36,8 @@ class WriteEvents : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write_events)
+
+        createnotificationchannel()
 
         val newsRepository = EventRepository(EventDatabase(this))
         val viewModelProviderFactory = EventViewModelProviderFactory(newsRepository)
@@ -155,6 +161,20 @@ class WriteEvents : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun createnotificationchannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "event_id",
+                "Event Reminder",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            channel.description = "Notification for event"
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
 }
