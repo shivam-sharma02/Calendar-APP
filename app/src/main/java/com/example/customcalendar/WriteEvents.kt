@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.db.EventDatabase
 import com.example.model.Event
@@ -51,6 +52,7 @@ class WriteEvents : AppCompatActivity() {
         val eventDescription = findViewById<TextInputLayout>(R.id.eventDescription)
         val selectedTime = findViewById<TextView>(R.id.timeView)
         val createEvent = findViewById<Button>(R.id.createEvent)
+        val deleteEvent = findViewById<Button>(R.id.deleteEvent)
 
         selectTime.visibility = View.INVISIBLE
         selectedTime.visibility = View.INVISIBLE
@@ -102,6 +104,17 @@ class WriteEvents : AppCompatActivity() {
             } else {
                 Toast.makeText(this@WriteEvents, "Please enter event description and date!", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        deleteEvent.setOnClickListener {
+            viewModel.getEvents().observe(this, Observer<List<Event>> {events ->
+                val eventForDeleteDate = events.find { it.eventDate == date }
+
+                if (eventForDeleteDate != null){
+                    viewModel.deleteEvent(eventForDeleteDate)
+                    Toast.makeText(this, "Event deleted successfully :)", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
 
     }
