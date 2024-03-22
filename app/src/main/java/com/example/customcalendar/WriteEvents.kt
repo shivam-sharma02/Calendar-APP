@@ -3,6 +3,7 @@ package com.example.customcalendar
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -36,7 +37,12 @@ class WriteEvents : AppCompatActivity() {
         viewModel = ViewModelProvider(this,viewModelProviderFactory).get(EventViewModel::class.java)
 
         val date = intent?.getStringExtra("EXTRA_DATE")
-        val month = intent?.getStringExtra("EXTRA_MONTH")
+
+        val parts = date?.split(" ")
+        val month = parts?.get(0)
+        val day = parts?.get(1)
+
+        Log.e("RecievedDate", "$parts , $month, $day, $date")
 
         val currentMonth = findViewById<TextView>(R.id.currentMonth)
         val currentDate = findViewById<TextView>(R.id.currentDate)
@@ -68,8 +74,8 @@ class WriteEvents : AppCompatActivity() {
             else -> "Unkown Month"
         }
 
-        currentMonth.text = currentDate2
-        currentDate.text = date
+        currentMonth.text = month
+        currentDate.text = day
 
         alarmSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -87,7 +93,7 @@ class WriteEvents : AppCompatActivity() {
         createEvent.setOnClickListener {
 
             val eventDescriptionToPass = eventDescription.editText?.text.toString()
-            val eventDateToPass = "$date? ,$currentDate2?"
+            val eventDateToPass = date
 
             if (eventDescriptionToPass.isNotEmpty()) {
                 val event = Event(eventDescription = eventDescriptionToPass, eventDate = eventDateToPass)

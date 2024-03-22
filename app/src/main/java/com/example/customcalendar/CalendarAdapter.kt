@@ -1,6 +1,7 @@
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.provider.CalendarContract.Events
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.customcalendar.R
 import com.example.customcalendar.WriteEvents
+import com.example.model.Event
 import java.sql.RowId
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -25,7 +27,8 @@ import java.util.Locale
 class CalendarAdapter(private val context: Context,
                       private val data: ArrayList<Date>,
                       private val currentDate: Calendar,
-                      private val changeMonth: Calendar?): RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
+                      private val changeMonth: Calendar?,
+                      private val events: List<Event> ): RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
     private var mListener: OnItemClickListener? = null
     private var index = -1
     private var selectCurrentDate = true
@@ -101,11 +104,27 @@ class CalendarAdapter(private val context: Context,
                 } else makeItemDisabled(holder)
             else makeItemDisabled(holder)
         else makeItemDisabled(holder)
+
+        val sdfCompare = SimpleDateFormat("MMMM dd", Locale.ENGLISH)
+        val formattedDateCompare = sdfCompare.format(cal.time)
+
+        val eventForDate = events.find { it.eventDate == formattedDateCompare }
+
+        // Update UI based on event
+
+        if (eventForDate != null) {
+            // Show event in eventContent TextView
+            holder.eventContent.text = eventForDate.eventDescription
+        } else {
+            // No event for this date, hide eventContent TextView or show "No event"
+            holder.eventContent.text = " "
+        }
     }
 
     inner class ViewHolder(itemView: View,val listener: OnItemClickListener): RecyclerView.ViewHolder(itemView) {
         var txtDay = itemView.findViewById<TextView>(R.id.txt_date)
         var txtDayInWeek = itemView.findViewById<TextView>(R.id.txt_day)
+        var eventContent = itemView.findViewById<TextView>(R.id.eventContent)
         var linearLayout = itemView.findViewById<LinearLayout>(R.id.calendar_linear_layout)
     }
 
@@ -128,7 +147,7 @@ class CalendarAdapter(private val context: Context,
     private fun makeItemSelected(holder: ViewHolder) {
         holder.txtDay!!.setTextColor(Color.parseColor("#FFFFFF"))
         holder.txtDayInWeek!!.setTextColor(Color.parseColor("#FFFFFF"))
-        holder.linearLayout!!.setBackgroundColor(ContextCompat.getColor(context, R.color.ThemeColor1)) // theme color 1
+        holder.linearLayout!!.setBackgroundResource(R.drawable.background_top) // theme color 1
         holder.linearLayout!!.isEnabled = false
     }
 
@@ -156,9 +175,16 @@ class CalendarAdapter(private val context: Context,
             val date = holder.txtDay.text.toString()
             val month = selectedMonth.toString()
 
+            val cal = Calendar.getInstance()
+            cal.set(Calendar.MONTH, selectedMonth)
+            cal.set(Calendar.DAY_OF_MONTH, holder.txtDay.text.toString().toInt())
+
+            val sdf = SimpleDateFormat("MMMM dd", Locale.ENGLISH)
+            val formattedDate = sdf.format(cal.time)
+
             val intent = Intent(context, WriteEvents::class.java)
-            intent.putExtra("EXTRA_DATE", date)
-            intent.putExtra("EXTRA_MONTH", month)
+            intent.putExtra("EXTRA_DATE", formattedDate)
+//            intent.putExtra("EXTRA_MONTH", month)
             Log.e("intentExtra", "intent extra date which is $date has been sent and month is $month")
             context.startActivity(intent)
 

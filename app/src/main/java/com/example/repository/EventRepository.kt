@@ -13,4 +13,6 @@ class EventRepository(
 
     suspend fun deleteEvent(event: Event) = db.getEventsDao().deleteEvent(event)
 
+    fun getAllEvents() = db.getEventsDao().getAllEvents()
+
 }

@@ -69,7 +69,7 @@
     <Switch
         android:id="@+id/alarmSwitch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="Alarm"
         tools:layout_editor_absoluteX="24dp"
         tools:layout_editor_absoluteY="185dp"

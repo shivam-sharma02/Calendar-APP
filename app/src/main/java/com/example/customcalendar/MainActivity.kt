@@ -4,12 +4,14 @@ import CalendarAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.db.EventDatabase
+import com.example.model.Event
 import com.example.repository.EventRepository
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -58,29 +60,35 @@ class MainActivity : AppCompatActivity() {
 
         lastDayInCalendar.add(Calendar.MONTH, 9)
 
-        setUpCalendar()
+        viewModel.getEvents().observe(this, Observer<List<Event>> {events ->
 
-        prevMonthTextView!!.setOnClickListener {
-            if (cal.after(currentDate)) {
-                cal.add(Calendar.MONTH, -1)
-                if (cal == currentDate)
-                    setUpCalendar()
-                else
-                    setUpCalendar(changeMonth = cal)
-            }
-        }
+            setUpCalendar(events)
 
-        nextMonthTextView!!.setOnClickListener {
-            if (cal.before(lastDayInCalendar)) {
-                cal.add(Calendar.MONTH, 1)
-                setUpCalendar(changeMonth = cal)
+            prevMonthTextView!!.setOnClickListener {
+                if (cal.after(currentDate)) {
+                    cal.add(Calendar.MONTH, -1)
+                    if (cal == currentDate)
+                        setUpCalendar(events)
+                    else
+                        setUpCalendar(events,changeMonth = cal)
+                }
             }
-        }
+
+            nextMonthTextView!!.setOnClickListener {
+                if (cal.before(lastDayInCalendar)) {
+                    cal.add(Calendar.MONTH, 1)
+                    setUpCalendar(events,changeMonth = cal)
+                }
+            }
+
+        })
+
+
 
 
     }
 
-    private fun setUpCalendar(changeMonth: Calendar? = null) {
+    private fun setUpCalendar(events: List<Event> = emptyList(), changeMonth: Calendar? = null) {
         // first part
         currMonthTextView!!.text = sdf.format(cal.time)
         val monthCalendar = cal.clone() as Calendar
@@ -117,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         // third part
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView!!.layoutManager = layoutManager
-        val calendarAdapter = CalendarAdapter(this, dates, currentDate, changeMonth)
+        val calendarAdapter = CalendarAdapter(this, dates, currentDate, changeMonth, events)
         recyclerView!!.adapter = calendarAdapter
 
         when {

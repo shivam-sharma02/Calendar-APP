@@ -13,7 +13,8 @@ class EventViewModel(
         eventRepository.upsert(event)
     }
 
-//    fun getSavedEvents() = eventRepository.getSavedEvents(date = )
+//    fun getSavedEvents(date: String?) = eventRepository.getSavedEvents(date)
+    fun getEvents() = eventRepository.getAllEvents()
 
     fun deleteEvent(event: Event) = viewModelScope.launch {
         eventRepository.deleteEvent(event)
