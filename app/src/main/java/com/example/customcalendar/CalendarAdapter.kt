@@ -121,6 +121,7 @@ class CalendarAdapter(private val context: Context,
         var txtDay = itemView.findViewById<TextView>(R.id.txt_date)
         var txtDayInWeek = itemView.findViewById<TextView>(R.id.txt_day)
         var eventContent = itemView.findViewById<TextView>(R.id.eventContent)
+        var alarmTime = itemView.findViewById<TextView>(R.id.alarmTime)
         var linearLayout = itemView.findViewById<LinearLayout>(R.id.calendar_linear_layout)
     }
 

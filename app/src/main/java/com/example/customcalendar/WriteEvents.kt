@@ -1,9 +1,12 @@
 package com.example.customcalendar
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,12 +26,17 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class WriteEvents : AppCompatActivity() {
 
     lateinit var viewModel: EventViewModel
+    private lateinit var alarmManager: AlarmManager
 
+    
     private lateinit var timePicker: MaterialTimePicker
     private lateinit var calendar: Calendar
 
@@ -37,13 +45,13 @@ class WriteEvents : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write_events)
 
-        createnotificationchannel()
+        createNotificationChannel()
 
         val newsRepository = EventRepository(EventDatabase(this))
         val viewModelProviderFactory = EventViewModelProviderFactory(newsRepository)
         viewModel = ViewModelProvider(this,viewModelProviderFactory).get(EventViewModel::class.java)
 
-        val date = intent?.getStringExtra("EXTRA_DATE")
+            val date = intent?.getStringExtra("EXTRA_DATE")
 
         val parts = date?.split(" ")
         val month = parts?.get(0)
@@ -103,11 +111,78 @@ class WriteEvents : AppCompatActivity() {
             val eventDescriptionToPass = eventDescription.editText?.text.toString()
             val eventDateToPass = date
 
-            if (eventDescriptionToPass.isNotEmpty()) {
+            if (eventDescriptionToPass.isNotEmpty() && !alarmSwitch.isChecked) {
                 val event = Event(eventDescription = eventDescriptionToPass, eventDate = eventDateToPass)
                 viewModel.saveEvent(event)
                 Toast.makeText(this@WriteEvents, "Event saved successfully !!", Toast.LENGTH_SHORT).show()
-            } else {
+            }
+            else if (eventDescriptionToPass.isNotEmpty() && alarmSwitch.isChecked && selectedTime != null){
+
+                alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                val intent = Intent(this, AlarmReceiver::class.java).apply {
+                    putExtra("EXTRA_DESCRIPTION", eventDescriptionToPass)
+                }
+
+                val pendingIntent = PendingIntent.getBroadcast(
+                    this,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+
+                val formattedDate = SimpleDateFormat("MMMM dd", Locale.getDefault())
+                val timeString = selectedTime.text.toString().replace(" ", "")
+                val timeFormat = SimpleDateFormat("hh:mma", Locale.getDefault())
+
+                try {
+                    val time = timeFormat.parse(timeString)
+
+                    if (time != null) {
+                        val dateToSet = date?.let { date -> formattedDate.parse(date) }
+
+                        if (dateToSet != null) {
+                            calendar.time = dateToSet
+                            val calTime = Calendar.getInstance()
+                            calTime.time = time
+                            calendar[Calendar.HOUR_OF_DAY] = calTime[Calendar.HOUR_OF_DAY]
+                            calendar[Calendar.MINUTE] = calTime[Calendar.MINUTE]
+
+                            val millis = calendar.timeInMillis
+                            Log.d("AlarmDebug", "Scheduled alarm for millis: $millis")
+
+                            alarmManager.setExact(
+                                AlarmManager.RTC_WAKEUP,
+                                millis,
+                                pendingIntent
+                            )
+
+                            val event = Event(
+                                eventDescription =  eventDescriptionToPass,
+                                eventDate = eventDateToPass,
+                                eventAlarm = time
+                            )
+                            viewModel.saveEvent(event)
+
+                            Toast.makeText(this, "Event with Alarm has been added", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            Log.e("AlarmDebug", "Date parsing failed")
+                            Toast.makeText(this, "Invalid date format", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    else {
+                        Log.e("AlarmDebug", "Time parsing failed")
+                        Toast.makeText(this, "Invalid time format", Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+                catch (e: ParseException) {
+                    Log.e("AlarmDebug", "Error parsing date or time: ${e.message}")
+                    Toast.makeText(this, "Error parsing date or time", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            else {
                 Toast.makeText(this@WriteEvents, "Please enter event description and date!", Toast.LENGTH_SHORT).show()
             }
         }
@@ -163,7 +238,7 @@ class WriteEvents : AppCompatActivity() {
 
     }
 
-    private fun createnotificationchannel() {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "event_id",
