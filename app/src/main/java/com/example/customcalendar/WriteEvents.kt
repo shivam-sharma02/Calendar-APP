@@ -159,7 +159,7 @@ class WriteEvents : AppCompatActivity() {
                             val event = Event(
                                 eventDescription =  eventDescriptionToPass,
                                 eventDate = eventDateToPass,
-                                eventAlarm = time
+                                eventAlarm = millis.toString()
                             )
                             viewModel.saveEvent(event)
 

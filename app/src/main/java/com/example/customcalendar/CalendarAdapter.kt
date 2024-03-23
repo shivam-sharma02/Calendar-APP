@@ -112,6 +112,9 @@ class CalendarAdapter(private val context: Context,
 
         if (eventForDate != null) {
             holder.eventContent.text = eventForDate.eventDescription
+            if (eventForDate.eventAlarm != null) {
+                holder.alarmTime.text = eventForDate.eventAlarm
+            }
         } else {
             holder.eventContent.text = " "
         }

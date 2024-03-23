@@ -11,5 +11,5 @@ data class Event (
     var id :Int? = null,
     var eventDescription : String? = null,
     var eventDate: String? = null,
-    var eventAlarm: Date? = null
+    var eventAlarm: String? = null
     )

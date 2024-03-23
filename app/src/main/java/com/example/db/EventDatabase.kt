@@ -27,7 +27,7 @@ abstract class EventDatabase: RoomDatabase() {
             Room.databaseBuilder(
                 context.applicationContext,
                 EventDatabase::class.java,
-                "Events.db"
+                "Events2.db"
             ).build()
     }
 }
