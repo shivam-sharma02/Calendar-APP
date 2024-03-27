@@ -56,6 +56,7 @@ class WriteEvents : AppCompatActivity() {
         val parts = date?.split(" ")
         val month = parts?.get(0)
         val day = parts?.get(1)
+        val year = parts?.get(2)
 
         Log.e("RecievedDate", "$parts , $month, $day, $date")
 
@@ -130,7 +131,7 @@ class WriteEvents : AppCompatActivity() {
                     PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
 
-                val formattedDate = SimpleDateFormat("MMMM dd", Locale.getDefault())
+                val formattedDate = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
                 val timeString = selectedTime.text.toString().replace(" ", "")
                 val timeFormat = SimpleDateFormat("hh:mma", Locale.getDefault())
 
@@ -156,10 +157,14 @@ class WriteEvents : AppCompatActivity() {
                                 pendingIntent
                             )
 
+                            var hour = calendar[Calendar.HOUR_OF_DAY]
+                            var minute = calendar[Calendar.MINUTE]
+                            val timeToSendForText = "$hour : $minute"
+
                             val event = Event(
                                 eventDescription =  eventDescriptionToPass,
                                 eventDate = eventDateToPass,
-                                eventAlarm = millis.toString()
+                                eventAlarm = timeToSendForText
                             )
                             viewModel.saveEvent(event)
 
@@ -193,6 +198,13 @@ class WriteEvents : AppCompatActivity() {
 
                 if (eventForDeleteDate != null){
                     viewModel.deleteEvent(eventForDeleteDate)
+
+                    alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                    val intent = Intent(this, AlarmReceiver::class.java)
+
+                    val pendingIntent = PendingIntent.getBroadcast(this, 0,intent, PendingIntent.FLAG_IMMUTABLE)
+
+                    alarmManager.cancel(pendingIntent)
                     Toast.makeText(this, "Event deleted successfully :)", Toast.LENGTH_SHORT).show()
                 }
             })

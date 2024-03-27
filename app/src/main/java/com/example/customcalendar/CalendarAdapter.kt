@@ -58,6 +58,10 @@ class CalendarAdapter(private val context: Context,
 
     override fun getItemCount(): Int = data.size
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss", Locale.ENGLISH)
         val cal = Calendar.getInstance()
@@ -105,7 +109,7 @@ class CalendarAdapter(private val context: Context,
             else makeItemDisabled(holder)
         else makeItemDisabled(holder)
 
-        val sdfCompare = SimpleDateFormat("MMMM dd", Locale.ENGLISH)
+        val sdfCompare = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
         val formattedDateCompare = sdfCompare.format(cal.time)
 
         val eventForDate = events.find { it.eventDate == formattedDateCompare }
@@ -179,7 +183,7 @@ class CalendarAdapter(private val context: Context,
             cal.set(Calendar.MONTH, selectedMonth)
             cal.set(Calendar.DAY_OF_MONTH, holder.txtDay.text.toString().toInt())
 
-            val sdf = SimpleDateFormat("MMMM dd", Locale.ENGLISH)
+            val sdf = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
             val formattedDate = sdf.format(cal.time)
 
             val intent = Intent(context, WriteEvents::class.java)
